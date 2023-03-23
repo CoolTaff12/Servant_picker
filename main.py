@@ -5,6 +5,12 @@ import requests
 from io import BytesIO
 import numpy as np
 
+# Runs in Python 3.7.
+# Package   version
+# numpy     1.21.6
+# pip       23.0.1
+# requests  2.28.2
+
 # Create form root
 root = tk.Tk()
 root.title("Servant Picker")
