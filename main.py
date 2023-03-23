@@ -6,10 +6,19 @@ from io import BytesIO
 import numpy as np
 
 # Runs in Python 3.7.
-# Package   version
-# numpy     1.21.6
-# pip       23.0.1
-# requests  2.28.2
+# Package               version
+# certifi               2022.12.7
+# setuptools            60.2.0
+# pip                   23.0.1
+#                       21.3.1
+# Pillow                9.4.0
+# idna                  3.4
+# charset-normalizer    3.1.0
+# requests              2.28.2
+# urllib3               1.26.15
+# numpy                 1.21.6
+# wheel                 0.37.1
+
 
 # Create form root
 root = tk.Tk()
@@ -43,23 +52,27 @@ for x in arr:
     img_url = "https://fgo-tracker.netlify.app/img/servant/" + ran + "-2x.png"
     response = requests.get(img_url)
     img_data = response.content
-    img = ImageTk.PhotoImage(Image.open(BytesIO(img_data)))
+
+    # Gets image and resize it
+    img_data = Image.open(BytesIO(img_data)).resize((120, 120), Image.LANCZOS)
+    img = ImageTk.PhotoImage(img_data)
 
     if slots == 6:
         my_img.append(img)
         # Create panel with added values
-        panel1 = tk.Label(root, width=64, height=64, image=my_img[0])
-        panel2 = tk.Label(root, width=64, height=64, image=my_img[1])
-        panel3 = tk.Label(root, width=64, height=64, image=my_img[2])
-        panel4 = tk.Label(root, width=64, height=64, image=my_img[3])
-        panel5 = tk.Label(root, width=64, height=64, image=my_img[4])
-        panel6 = tk.Label(root, width=64, height=64, image=my_img[5])
-        panel1.pack(side="left", fill="both", expand=1)
-        panel2.pack(side="left", fill="both", expand=1)
-        panel3.pack(side="left", fill="both", expand=1)
-        panel4.pack(side="left", fill="both", expand=1)
-        panel5.pack(side="left", fill="both", expand=1)
-        panel6.pack(side="left", fill="both", expand=1)
+        panel1 = tk.Label(root, width=120, height=120, image=my_img[0])
+        panel2 = tk.Label(root, width=120, height=120, image=my_img[1])
+        panel3 = tk.Label(root, width=120, height=120, image=my_img[2])
+        panel4 = tk.Label(root, width=120, height=120, image=my_img[3])
+        panel5 = tk.Label(root, width=120, height=120, image=my_img[4])
+        panel6 = tk.Label(root, width=120, height=120, image=my_img[5])
+        # Change the size of the images
+        panel1.pack(side="left", fill="both", expand=0)
+        panel2.pack(side="left", fill="both", expand=0)
+        panel3.pack(side="left", fill="both", expand=0)
+        panel4.pack(side="left", fill="both", expand=0)
+        panel5.pack(side="left", fill="both", expand=0)
+        panel6.pack(side="left", fill="both", expand=0)
         root.mainloop()
         # Open form
         username = input("Enter username:")
