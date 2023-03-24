@@ -59,20 +59,10 @@ for x in arr:
 
     if slots == 6:
         my_img.append(img)
-        # Create panel with added values
-        panel1 = tk.Label(root, width=120, height=120, image=my_img[0])
-        panel2 = tk.Label(root, width=120, height=120, image=my_img[1])
-        panel3 = tk.Label(root, width=120, height=120, image=my_img[2])
-        panel4 = tk.Label(root, width=120, height=120, image=my_img[3])
-        panel5 = tk.Label(root, width=120, height=120, image=my_img[4])
-        panel6 = tk.Label(root, width=120, height=120, image=my_img[5])
-        # Change the size of the images
-        panel1.pack(side="left", fill="both", expand=0)
-        panel2.pack(side="left", fill="both", expand=0)
-        panel3.pack(side="left", fill="both", expand=0)
-        panel4.pack(side="left", fill="both", expand=0)
-        panel5.pack(side="left", fill="both", expand=0)
-        panel6.pack(side="left", fill="both", expand=0)
+        # Create panel with added values and chang their size
+        for i in my_img:
+            panel = tk.Label(root, width=120, height=120, image=i).pack(side="left", fill="both", expand=0)
+
         root.mainloop()
         # Open form
         username = input("Enter username:")
