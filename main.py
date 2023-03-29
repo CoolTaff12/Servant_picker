@@ -32,47 +32,50 @@ arr = np.arange(307)
 b = np.array([0, 59, 83, 149, 151, 152, 168, 240, 333, 9944140])
 arr = np.setdiff1d(arr, b)
 
-# Shuffle server order
-np.random.shuffle(arr)
 
-slots = 1
+def run_data():
+    np.random.shuffle(arr)
+
+    slots = 1
+
+    # Pick random servant
+    for x in arr:
+
+        ran = str(x).zfill(3)
+        img_url = "https://fgo-tracker.netlify.app/img/servant/" + ran + "-2x.png"
+        response = requests.get(img_url)
+        img_data = response.content
+
+        # Gets image and resize it
+        img_data = Image.open(BytesIO(img_data)).resize((120, 120), Image.LANCZOS)
+        img = ImageTk.PhotoImage(img_data)
+
+        if slots == 6:
+            my_img.append(img)
+
+            # Create panel with added values and chang their size
+            for i in my_img:
+                panel = tk.Label(root, width=120, height=120, image=i).pack(side="left", fill="both", expand=0)
+
+            root.mainloop()
+            slots = 0
+        elif slots == 1:
+            my_img = [img]
+        else:
+            my_img.append(img)
+            print(ran)
+
+        slots = slots + 1
 
 # Reset function
 def reset_data():
-    print("Gerry")
+
+    print("it doesn't matter who is wrong or who is right")
+
 
 # Reset button
 btn = tk.Button(root, text= "Re-summon", command= reset_data)
 btn.pack()
 
-# Pick random servant
-for x in arr:
-
-    ran = str(x).zfill(3)
-    img_url = "https://fgo-tracker.netlify.app/img/servant/" + ran + "-2x.png"
-    response = requests.get(img_url)
-    img_data = response.content
-
-    # Gets image and resize it
-    img_data = Image.open(BytesIO(img_data)).resize((120, 120), Image.LANCZOS)
-    img = ImageTk.PhotoImage(img_data)
-
-    if slots == 6:
-        my_img.append(img)
-        # Create panel with added values and chang their size
-        for i in my_img:
-            panel = tk.Label(root, width=120, height=120, image=i).pack(side="left", fill="both", expand=0)
-
-        root.mainloop()
-        # Open form
-        username = input("Enter username:")
-        print("Rest")
-        slots = 0
-    elif slots == 1:
-        my_img = [img]
-    else:
-        my_img.append(img)
-        print(ran)
-
-    slots = slots + 1
+run_data()
 
