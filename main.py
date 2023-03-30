@@ -1,11 +1,10 @@
 import tkinter as tk
 from PIL import ImageTk, Image
-import os
 import requests
 from io import BytesIO
 import numpy as np
 
-# Runs in Python 3.7.
+# Runs in Python 3.8.
 # Package               version
 # certifi               2022.12.7
 # setuptools            60.2.0
@@ -23,7 +22,9 @@ import numpy as np
 # Create form root
 root = tk.Tk()
 root.title("Servant Picker")
-root.geometry("800x400")
+root.geometry("750x350")
+colorCode = "#0276B4"
+root.configure(background=colorCode)
 
 # Fill array with numbers which represents servants
 arr = np.arange(307)
@@ -37,16 +38,18 @@ def run_data():
     np.random.shuffle(arr)
 
     slots = 1
+    global my_img
 
     # Pick random servant
     for x in arr:
 
+        # Gets image from the web
         ran = str(x).zfill(3)
         img_url = "https://fgo-tracker.netlify.app/img/servant/" + ran + "-2x.png"
         response = requests.get(img_url)
         img_data = response.content
 
-        # Gets image and resize it
+        # Adds the image and resizes it
         img_data = Image.open(BytesIO(img_data)).resize((120, 120), Image.LANCZOS)
         img = ImageTk.PhotoImage(img_data)
 
@@ -55,10 +58,15 @@ def run_data():
 
             # Create panel with added values and chang their size
             for i in my_img:
-                panel = tk.Label(root, width=120, height=120, image=i).pack(side="left", fill="both", expand=0)
+                panel = tk.Label(root, width=120, height=120, image=i, background=colorCode, name=str(i) + "0")
+                panel.pack(side="left", fill="both", expand=0)
 
-            root.mainloop()
-            slots = 0
+            print(my_img[0])
+            #check_var1 = tk.IntVar()
+            #c1 = tk.Checkbutton(root, text="1", variable=check_var1, onvalue=1, offvalue=0,
+                              #  height=5, width=20, background=colorCode)
+            #c1.pack()
+            break
         elif slots == 1:
             my_img = [img]
         else:
@@ -67,15 +75,22 @@ def run_data():
 
         slots = slots + 1
 
+
 # Reset function
 def reset_data():
-
+    print(root.winfo_children())
+    # Get name from widget
+    print(root.children)
+    first_image = root.children["pyimage10"]
+    print(first_image)
     print("it doesn't matter who is wrong or who is right")
 
 
-# Reset button
-btn = tk.Button(root, text= "Re-summon", command= reset_data)
+# Adding a reset button
+btn = tk.Button(root, anchor="s", text="Re-summon", command=reset_data, background="#0095E5",
+                activebackground="#00A6FF", border=0)
 btn.pack()
 
 run_data()
 
+root.mainloop()
