@@ -62,10 +62,10 @@ def run_data():
                 panel.pack(side="left", fill="both", expand=0)
 
             print(my_img[0])
-            #check_var1 = tk.IntVar()
-            #c1 = tk.Checkbutton(root, text="1", variable=check_var1, onvalue=1, offvalue=0,
+            # check_var1 = tk.IntVar()
+            # c1 = tk.Checkbutton(root, text="1", variable=check_var1, onvalue=1, offvalue=0,
                               #  height=5, width=20, background=colorCode)
-            #c1.pack()
+            # c1.pack()
             break
         elif slots == 1:
             my_img = [img]
@@ -94,3 +94,24 @@ btn.pack()
 run_data()
 
 root.mainloop()
+
+# E X T R A - C O D E
+
+#from selenium import webdriver
+#from selenium.webdriver.common.by import By
+#from selenium.webdriver.support import expected_conditions as EC
+#from selenium.webdriver.support.wait import WebDriverWait
+
+#driver = webdriver.Chrome()
+#driver.maximize_window()
+#driver.get("https://tiermaker.com/list/mobile-games/fgo-tier-list-but-actually-with-all-the-servants-55890/2863347")
+
+## wait for the Full Time Employees to be visible
+#wait = WebDriverWait(driver, 5)
+#employees = wait.until(
+#    EC.visibility_of_element_located((By.XPATH,
+#                                      '//*[@id="share-container"]/a[1]')))
+## Get image from div
+#print(employees)
+
+#driver.close()
