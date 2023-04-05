@@ -27,9 +27,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 # numpy                 1.21.6
 # wheel                 0.37.1
 
-
-
-
 # Create form root
 root = tk.Tk()
 root.title("Servant Picker")
@@ -37,38 +34,21 @@ root.geometry("850x350")
 colorCode = "#0276B4"
 root.configure(background=colorCode)
 
-# Add image file
-# bg = PhotoImage(file = "helpful_ghost.png")
-
 # Create Canvas
-# canvas1 = Canvas( root, width = 400,
-                # height = 400)
+canvas1 = tk.Canvas(root, width=850, height=350)
 
-# canvas1.pack(fill="both", expand=True)
+canvas1.pack(fill="both", expand=True)
+
+# Add image file
+bg = Image.open("7waUcXA3cy8EK6Ct.png").resize((850, 350), Image.LANCZOS)
+bg = ImageTk.PhotoImage(bg)
 
 # Display image
-# canvas1.create_image(0, 0, image=bg,
-                 #    anchor="nw")
+canvas1.create_image(0, 0, image=bg,
+                     anchor="nw")
 
 # Add Text
 # canvas1.create_text(200, 250, text="Welcome")
-
-# Create Buttons
-# button1 = Button(root, text="Exit")
-# button3 = Button(root, text="Start")
-# button2 = Button(root, text="Reset")
-
-# Display Buttons
-# button1_canvas = canvas1.create_window(100, 10,
-#                                       anchor="nw",
-#                                       window=button1)
-
-# button2_canvas = canvas1.create_window(100, 40,
-#                                       anchor="nw",
-#                                       window=button2)
-
-# button3_canvas = canvas1.create_window(100, 70, anchor="nw",
-#                                       window=button3)
 
 # Exclude these servants: 150 152 153 169 241 334
 exclude_these = [150, 152, 153, 169, 241]
@@ -143,10 +123,14 @@ def reset_data():
     print("it doesn't matter who is wrong or who is right")
 
 
-# Adding a reset button
+# Adding and displaying a reset button
 btn = tk.Button(root, anchor="s", text="Re-summon", command=reset_data, background="#0095E5",
                 activebackground="#00A6FF", border=0)
-btn.pack()
+
+btn_canvas = canvas1.create_window(425, 30, anchor="s", window=btn)
+
+
+#btn.pack()
 
 run_data()
 
