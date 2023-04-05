@@ -2,7 +2,16 @@ import tkinter as tk
 from PIL import ImageTk, Image
 import requests
 from io import BytesIO
+# ----------------
 import numpy as np
+from random import *
+# ----------------
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
+# ----------------
+
 
 # Runs in Python 3.8.
 # Package               version
@@ -19,38 +28,86 @@ import numpy as np
 # wheel                 0.37.1
 
 
+
+
 # Create form root
 root = tk.Tk()
 root.title("Servant Picker")
-root.geometry("750x350")
+root.geometry("850x350")
 colorCode = "#0276B4"
 root.configure(background=colorCode)
 
-# Fill array with numbers which represents servants
-arr = np.arange(307)
+# Add image file
+# bg = PhotoImage(file = "helpful_ghost.png")
 
-# Don't include these numbers  - 59, 83, 149, 151, 152, 168, 240, 333, 9944140
-b = np.array([0, 59, 83, 149, 151, 152, 168, 240, 333, 9944140])
-arr = np.setdiff1d(arr, b)
+# Create Canvas
+# canvas1 = Canvas( root, width = 400,
+                # height = 400)
+
+# canvas1.pack(fill="both", expand=True)
+
+# Display image
+# canvas1.create_image(0, 0, image=bg,
+                 #    anchor="nw")
+
+# Add Text
+# canvas1.create_text(200, 250, text="Welcome")
+
+# Create Buttons
+# button1 = Button(root, text="Exit")
+# button3 = Button(root, text="Start")
+# button2 = Button(root, text="Reset")
+
+# Display Buttons
+# button1_canvas = canvas1.create_window(100, 10,
+#                                       anchor="nw",
+#                                       window=button1)
+
+# button2_canvas = canvas1.create_window(100, 40,
+#                                       anchor="nw",
+#                                       window=button2)
+
+# button3_canvas = canvas1.create_window(100, 70, anchor="nw",
+#                                       window=button3)
+
+# Exclude these servants: 150 152 153 169 241 334
+exclude_these = [150, 152, 153, 169, 241]
+
+# Randomize 6 servants numbers in throneOfHeroes
+throneOfHeroes = np.array([choice(list(set(range(2, 308)) - set(exclude_these))),
+                           choice(list(set(range(2, 308)) - set(exclude_these))),
+                           choice(list(set(range(2, 308)) - set(exclude_these))),
+                           choice(list(set(range(2, 308)) - set(exclude_these))),
+                           choice(list(set(range(2, 308)) - set(exclude_these))),
+                           choice(list(set(range(2, 308)) - set(exclude_these)))])
+
+driver = webdriver.Chrome()
+driver.maximize_window()
+driver.get("https://tiermaker.com/create/fgo-servant-tier-list-sorted-by-servant-id-1548189?ref=button")
 
 
 def run_data():
-    np.random.shuffle(arr)
 
     slots = 1
     global my_img
 
     # Pick random servant
-    for x in arr:
+    for servant in throneOfHeroes:
 
         # Gets image from the web
-        ran = str(x).zfill(3)
-        img_url = "https://fgo-tracker.netlify.app/img/servant/" + ran + "-2x.png"
+        # wait for the Full Time Employees to be visible
+        wait = WebDriverWait(driver, 2)
+        employees = wait.until(
+            EC.visibility_of_element_located((By.XPATH,
+                                              '//*[@id="create-image-carousel"]/div[' + str(servant) + ']')))
+        # Get image from div
+        summoning_servant = str(employees.get_attribute("style")).split('"')
+        img_url = "https://tiermaker.com" + summoning_servant[1]
         response = requests.get(img_url)
         img_data = response.content
 
         # Adds the image and resizes it
-        img_data = Image.open(BytesIO(img_data)).resize((120, 120), Image.LANCZOS)
+        img_data = Image.open(BytesIO(img_data)).resize((138, 150), Image.LANCZOS)
         img = ImageTk.PhotoImage(img_data)
 
         if slots == 6:
@@ -58,7 +115,7 @@ def run_data():
 
             # Create panel with added values and chang their size
             for i in my_img:
-                panel = tk.Label(root, width=120, height=120, image=i, background=colorCode, name=str(i) + "0")
+                panel = tk.Label(root, width=138, height=150, image=i, background=colorCode, name=str(i) + "0")
                 panel.pack(side="left", fill="both", expand=0)
 
             print(my_img[0])
@@ -71,7 +128,7 @@ def run_data():
             my_img = [img]
         else:
             my_img.append(img)
-            print(ran)
+            print(servant)
 
         slots = slots + 1
 
@@ -93,25 +150,7 @@ btn.pack()
 
 run_data()
 
+driver.close()
 root.mainloop()
 
-# E X T R A - C O D E
 
-#from selenium import webdriver
-#from selenium.webdriver.common.by import By
-#from selenium.webdriver.support import expected_conditions as EC
-#from selenium.webdriver.support.wait import WebDriverWait
-
-#driver = webdriver.Chrome()
-#driver.maximize_window()
-#driver.get("https://tiermaker.com/list/mobile-games/fgo-tier-list-but-actually-with-all-the-servants-55890/2863347")
-
-## wait for the Full Time Employees to be visible
-#wait = WebDriverWait(driver, 5)
-#employees = wait.until(
-#    EC.visibility_of_element_located((By.XPATH,
-#                                      '//*[@id="share-container"]/a[1]')))
-## Get image from div
-#print(employees)
-
-#driver.close()
