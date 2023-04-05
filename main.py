@@ -62,10 +62,6 @@ def run_data():
                 panel.pack(side="left", fill="both", expand=0)
 
             print(my_img[0])
-            #check_var1 = tk.IntVar()
-            #c1 = tk.Checkbutton(root, text="1", variable=check_var1, onvalue=1, offvalue=0,
-                              #  height=5, width=20, background=colorCode)
-            #c1.pack()
             break
         elif slots == 1:
             my_img = [img]
