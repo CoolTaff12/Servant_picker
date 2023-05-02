@@ -11,7 +11,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 # ----------------
-
+# vlc name is python-vlc if you want to install it
+import vlc
+# In this case libvlc.dll will not be found. Make sure to install the 64bit-version
+# ----------------
 
 # Runs in Python 3.8.
 # Package               version
@@ -26,6 +29,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 # urllib3               1.26.15
 # numpy                 1.21.6
 # wheel                 0.37.1
+# python-vlc (vlc)      30.0.18122
 
 # Create form root
 root = tk.Tk()
@@ -51,15 +55,16 @@ canvas1.create_image(0, 0, image=bg,
 # canvas1.create_text(200, 250, text="Welcome")
 
 # Exclude these servants: 150 152 153 169 241 334
-exclude_these = [150, 152, 153, 169, 241]
+exclude_these = [84, 150, 152, 153, 169, 241]
+latest_Servant_number = 308 + 2
 
 # Randomize 6 servants numbers in throneOfHeroes
-throneOfHeroes = np.array([choice(list(set(range(2, 308)) - set(exclude_these))),
-                           choice(list(set(range(2, 308)) - set(exclude_these))),
-                           choice(list(set(range(2, 308)) - set(exclude_these))),
-                           choice(list(set(range(2, 308)) - set(exclude_these))),
-                           choice(list(set(range(2, 308)) - set(exclude_these))),
-                           choice(list(set(range(2, 308)) - set(exclude_these)))])
+throneOfHeroes = np.array([choice(list(set(range(2, latest_Servant_number)) - set(exclude_these))),
+                           choice(list(set(range(2, latest_Servant_number)) - set(exclude_these))),
+                           choice(list(set(range(2, latest_Servant_number)) - set(exclude_these))),
+                           choice(list(set(range(2, latest_Servant_number)) - set(exclude_these))),
+                           choice(list(set(range(2, latest_Servant_number)) - set(exclude_these))),
+                           choice(list(set(range(2, latest_Servant_number)) - set(exclude_these)))])
 
 driver = webdriver.Chrome()
 driver.maximize_window()
@@ -95,7 +100,7 @@ def run_data():
 
             # Create panel with added values and chang their size
             for i in my_img:
-                panel = tk.Label(root, width=138, height=150, image=i, background=colorCode, name=str(i) + "0")
+                panel = tk.Label(root, width=138, height=150, image=i, background=colorCode, text= 'CHAR!',name=str(i) + "0")
                 panel.pack(side="left", fill="both", expand=0)
 
             print(my_img[0])
@@ -117,10 +122,30 @@ def run_data():
 def reset_data():
     print(root.winfo_children())
     # Get name from widget
-    print(root.children)
-    first_image = root.children["pyimage10"]
-    print(first_image)
-    print("it doesn't matter who is wrong or who is right")
+    new_Test_image = Image.open("CHAR!.png").resize((138, 150), Image.LANCZOS)
+    new_Test_image = ImageTk.PhotoImage(new_Test_image)
+    # use this code for real
+    # root.nametowidget('.pyimage20').config(image=new_Test_image).pack()
+    # use this for jokes
+    evading_fire = '.pyimage' + str(randint(2, 7)) + '0'
+    # first_image = root.children["pyimage10"]
+    # print(first_image)
+    random_Chance = randint(1, 4)
+    if random_Chance == 3:
+        mp3_url = "C:/Users/leta/Downloads/mPw6ecM33QzSi48Y-long.mp3"
+        x = vlc.MediaPlayer(mp3_url)
+        x.play()
+        # Force select a team
+        getter_beam = '.pyimage' + str(randint(2, 7)) + '0'
+        getter_Image = Image.open("ryoma.png").resize((138, 150), Image.LANCZOS)
+        getter_Image = ImageTk.PhotoImage(getter_Image)
+        root.nametowidget(getter_beam).config(image=getter_Image)
+
+    print(evading_fire)
+    root.nametowidget(evading_fire).config(image=new_Test_image)
+    root.pack()
+    # check out this website
+    # https://stackoverflow.com/questions/38229857/how-to-avoid-attributeerror-tkinter-tkapp-object-has-no-attribute-passcheck
 
 
 # Adding and displaying a reset button
