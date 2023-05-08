@@ -59,19 +59,26 @@ exclude_these = [84, 150, 152, 153, 169, 241]
 latest_Servant_number = 308 + 2
 previous_servant = []
 
+music_cue = ""
+
 
 driver = webdriver.Chrome()
 # driver.maximize_window()
 driver.get("https://tiermaker.com/create/fgo-servant-tier-list-sorted-by-servant-id-1548189?ref=button")
 
+def SPECIAL_SUMMO_MUSIC(mp3_url):
+    x = vlc.MediaPlayer(mp3_url)
+    x.play()
+    print("Runover")
+
 
 def SUMMON(servant_number, is_special):
 
     if is_special:
+        # 53 , 39 , 274
         confirmed_servant_data = Image.open("ryoma.png").resize((138, 150), Image.LANCZOS)
-        mp3_url = "mPw6ecM33QzSi48Y.mp3"
-        x = vlc.MediaPlayer(mp3_url)
-        x.play()
+        global music_cue
+        music_cue = "mPw6ecM33QzSi48Y.mp3"
     else:
         wait = WebDriverWait(driver, 1)
         summoning_circle = wait.until(
@@ -108,6 +115,7 @@ def SUMMONING_CIRCLE():
         new_servants.append(SUMMON(servant_nr, special_summon))
         canvas1.itemconfigure(previous_servant[servant_order],image=new_servants[servant_order])
 
+    if special_summon: SPECIAL_SUMMO_MUSIC(music_cue)
 
 # Randomize 6 servants numbers in throneOfHeroes
 throneOfHeroes = np.array([choice(list(set(range(2, latest_Servant_number)) - set(exclude_these))),
