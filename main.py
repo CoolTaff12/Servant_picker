@@ -16,6 +16,7 @@ import vlc
 # In this case libvlc.dll will not be found. Make sure to install the 64bit-version
 # ----------------
 
+
 # Runs in Python 3.8.
 # Package               version
 # certifi               2022.12.7
@@ -73,9 +74,10 @@ def ON_CLOSING():
 
 
 def SET_ALL(value):
-    for psc in previous_servants_check:
-        psc.set(value)
+    [psc.set(value) for psc in previous_servants_check]
 
+def DISABLE_ALL():
+    [psc.config(state=False) for psc in previous_servants_check]
 
 def THRONE_OF_HEROES():
 
@@ -95,18 +97,21 @@ def SPECIAL_SERVANT_TEAM(arguments):
         # Feline
         2: np.array([59, 203, 104, 2, 0, 0]),
         # Suicide Run
-        3: np.array([choice([252, 204]), 17, 259, 108, 295, 274])
+        3: np.array([choice([252, 204]), 17, 259, 108, 295, 274]),
+        # ONLY DIO
+        4: np.array([36, 119, 34, 0, 0, 0])
     }
     return team.get(arguments, np.array([0, 0, 0, 0, 0]))
 
 
 def SPECIAL_SUMMON_MUSIC(arguments):
     file = {
-        1: "mPw6ecM33QzSi48Y.mp3",
-        2: "burunyaa.wav",
-        3: "suicide_eng.wav"
+        1: ["mPw6ecM33QzSi48Y.mp3", 0.1],
+        2: ["burunyaa.wav", 10.1],
+        3: ["suicide_eng.wav", 10.1],
+        4: ["Laughs_in_muda.mp3", 10.1]
     }
-    play_the_fanfare = vlc.MediaPlayer('SFX/'+str(file.get(arguments)))
+    play_the_fanfare = vlc.MediaPlayer('SFX/'+str(file.get(arguments)[0]))
     play_the_fanfare.play()
     print("Team " + str(arguments))
 
@@ -138,10 +143,13 @@ def SUMMONING_CIRCLE():
     re_summon = []
 
     new_servants = []
+    no_replacement_request = bool(sum([psc.get() is True for psc in previous_servants_check]) not in range(1, 4))
+
     special_summon = bool(randint(1, 6) == 3)
-    if special_summon:
-        random_special = randint(1, 3)
+    if special_summon and no_replacement_request:
+        random_special = randint(1, 4)
         re_summon = SPECIAL_SERVANT_TEAM(random_special)
+        # DISABLE_ALL()
         SPECIAL_SUMMON_MUSIC(random_special)
     else:
         re_summon = THRONE_OF_HEROES()
@@ -151,6 +159,7 @@ def SUMMONING_CIRCLE():
         canvas1.itemconfigure(previous_servant[servant_order], image=new_servants[servant_order])
 
     SET_ALL(False)
+    # print(canvas1.de)
 
 
 servant_team = []
