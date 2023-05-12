@@ -76,18 +76,15 @@ def ON_CLOSING():
 def SET_ALL(value):
     [psc.set(value) for psc in previous_servants_check]
 
+
 def DISABLE_ALL():
     [psc.config(state=False) for psc in previous_servants_check]
+
 
 def THRONE_OF_HEROES():
 
     # Randomize 6 servants numbers in throne_of_heroes
-    return np.array([choice(list(set(range(2, latest_Servant_number)) - set(exclude_these))),
-                     choice(list(set(range(2, latest_Servant_number)) - set(exclude_these))),
-                     choice(list(set(range(2, latest_Servant_number)) - set(exclude_these))),
-                     choice(list(set(range(2, latest_Servant_number)) - set(exclude_these))),
-                     choice(list(set(range(2, latest_Servant_number)) - set(exclude_these))),
-                     choice(list(set(range(2, latest_Servant_number)) - set(exclude_these)))])
+    return np.random.choice(list(set(range(2, latest_Servant_number)) - set(exclude_these)), 6)
 
 
 def SPECIAL_SERVANT_TEAM(arguments):
