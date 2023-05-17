@@ -60,8 +60,10 @@ exclude_these = [84, 150, 152, 153, 169, 241]
 latest_Servant_number = 308 + 2
 previous_servant = []
 previous_servants_check = []
+check_boxes = []
 new_servants = []
 special_summon = False
+reset_checks = False
 
 driver = webdriver.Chrome()
 driver.get("https://tiermaker.com/create/fgo-servant-tier-list-sorted-by-servant-id-1548189?ref=button")
@@ -77,8 +79,11 @@ def SET_ALL(value):
     [psc.set(value) for psc in previous_servants_check]
 
 
-def DISABLE_ALL():
-    [psc.config(state=False) for psc in previous_servants_check]
+def DISABLE_OR_ENABLE_ALL(function_mode):
+    if function_mode:
+        [canvas1.itemconfigure(psc, state='normal') for psc in check_boxes]
+    else:
+        [canvas1.itemconfigure(psc, state='hidden') for psc in check_boxes]
 
 
 def THRONE_OF_HEROES():
@@ -116,7 +121,7 @@ def SPECIAL_SUMMON_MUSIC(arguments):
 def SUMMON(servant_number, is_special):
 
     if is_special and servant_number == 0:
-        confirmed_servant_data = Image.open("ryoma.png").resize((138, 150), Image.LANCZOS)
+        confirmed_servant_data = Image.open("empty.png").resize((138, 150), Image.LANCZOS)
     else:
         wait = WebDriverWait(driver, 1)
         summoning_circle = wait.until(
@@ -137,23 +142,33 @@ def SUMMON(servant_number, is_special):
 def SUMMONING_CIRCLE():
     global new_servants
     global special_summon
+    global reset_checks
     re_summon = []
 
     new_servants = []
     no_replacement_request = bool(sum([psc.get() is True for psc in previous_servants_check]) not in range(1, 4))
+    print(no_replacement_request)
 
     special_summon = bool(randint(1, 6) == 3)
+    random_special = 0
     if special_summon and no_replacement_request:
         random_special = randint(1, 4)
         re_summon = SPECIAL_SERVANT_TEAM(random_special)
-        # DISABLE_ALL()
-        SPECIAL_SUMMON_MUSIC(random_special)
     else:
         re_summon = THRONE_OF_HEROES()
 
     for servant_order, servant_nr in enumerate(re_summon):
         new_servants.append(SUMMON(servant_nr, special_summon))
         canvas1.itemconfigure(previous_servant[servant_order], image=new_servants[servant_order])
+
+    if reset_checks:
+        DISABLE_OR_ENABLE_ALL(reset_checks)
+        reset_checks = False
+
+    if random_special > 0:
+        SPECIAL_SUMMON_MUSIC(random_special)
+        DISABLE_OR_ENABLE_ALL(reset_checks)
+        reset_checks = True
 
     SET_ALL(False)
     # print(canvas1.de)
@@ -166,21 +181,16 @@ for servant_order, servant_nr in enumerate(THRONE_OF_HEROES()):
                                                  image=servant_team[servant_order]))
     psc = tk.BooleanVar()
     previous_servants_check.append(psc)
-    canvas1.create_window(
+    check_boxes.append(canvas1.create_window(
         85 + (138 * servant_order), 250,
         window=tk.Checkbutton(canvas1, background="black", activebackground="black",
-                              variable=psc))
+                              variable=psc)))
 
 
 btn = tk.Button(root, anchor="s", text="Re-summon", command=lambda: SUMMONING_CIRCLE(), background="#0095E5",
                 activebackground="#00A6FF", border=0)
 
 btn_canvas = canvas1.create_window(425, 30, anchor="s", window=btn)
-
-
-# e1 = tk.Entry(canvas1, background="#0095E5", border=0)
-# e1.insert(0, "Replace servant? Type number (2)")
-# canvas1.create_window(425, 280, window=e1)
 
 
 driver.minimize_window()
