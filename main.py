@@ -58,6 +58,7 @@ canvas1.create_image(0, 0, image=bg,
 # Exclude these servants: 150 152 153 169 241 334
 exclude_these = [84, 150, 152, 153, 169, 241]
 latest_Servant_number = 308 + 2
+servant_team = []
 previous_servant = []
 previous_servants_check = []
 check_boxes = []
@@ -144,10 +145,9 @@ def SUMMONING_CIRCLE():
     global special_summon
     global reset_checks
     re_summon = []
-
     new_servants = []
     no_replacement_request = bool(sum([psc.get() is True for psc in previous_servants_check]) not in range(1, 4))
-    print(no_replacement_request)
+    allowed = [i for i, x in enumerate(previous_servants_check) if x.get()]
 
     special_summon = bool(randint(1, 6) == 3)
     random_special = 0
@@ -159,7 +159,13 @@ def SUMMONING_CIRCLE():
 
     for servant_order, servant_nr in enumerate(re_summon):
         new_servants.append(SUMMON(servant_nr, special_summon))
-        canvas1.itemconfigure(previous_servant[servant_order], image=new_servants[servant_order])
+        if no_replacement_request:
+            canvas1.itemconfigure(previous_servant[servant_order], image=new_servants[servant_order])
+        elif no_replacement_request is False and servant_order in allowed:
+            canvas1.itemconfigure(previous_servant[servant_order], image=new_servants[servant_order])
+            servant_team[servant_order] = new_servants[servant_order]
+        else:
+            canvas1.itemconfigure(previous_servant[servant_order], image=servant_team[servant_order])
 
     if reset_checks:
         DISABLE_OR_ENABLE_ALL(reset_checks)
@@ -171,10 +177,8 @@ def SUMMONING_CIRCLE():
         reset_checks = True
 
     SET_ALL(False)
-    # print(canvas1.de)
 
 
-servant_team = []
 for servant_order, servant_nr in enumerate(THRONE_OF_HEROES()):
     servant_team.append(SUMMON(servant_nr, False))
     previous_servant.append(canvas1.create_image(15 + (138 * servant_order), 90, anchor="nw",
