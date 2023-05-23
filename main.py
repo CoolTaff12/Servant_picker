@@ -159,13 +159,22 @@ def SUMMONING_CIRCLE():
 
     for servant_order, servant_nr in enumerate(re_summon):
         new_servants.append(SUMMON(servant_nr, special_summon))
-        if no_replacement_request:
+        if no_replacement_request and special_summon:
             canvas1.itemconfigure(previous_servant[servant_order], image=new_servants[servant_order])
+
+        elif no_replacement_request and special_summon is False:
+            canvas1.itemconfigure(previous_servant[servant_order], image=new_servants[servant_order])
+            servant_team[servant_order] = new_servants[servant_order]
+
         elif no_replacement_request is False and servant_order in allowed:
             canvas1.itemconfigure(previous_servant[servant_order], image=new_servants[servant_order])
             servant_team[servant_order] = new_servants[servant_order]
-        else:
+
+        elif no_replacement_request is False and servant_order not in allowed:
             canvas1.itemconfigure(previous_servant[servant_order], image=servant_team[servant_order])
+
+        else:
+            print("Oh oh! We skipped the rest of conditions at " + str(servant_order))
 
     if reset_checks:
         DISABLE_OR_ENABLE_ALL(reset_checks)
