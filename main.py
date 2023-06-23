@@ -57,7 +57,7 @@ canvas1.create_image(0, 0, image=bg,
 
 # Exclude these servants: 150 152 153 169 241 334
 exclude_these = [84, 150, 152, 153, 169, 241]
-latest_Servant_number = 308 + 2
+latest_Servant_number = 313 + 2
 servant_team = []
 previous_servant = []
 previous_servants_check = []
