@@ -17,20 +17,21 @@ import vlc
 # ----------------
 
 
-# Runs in Python 3.8.
+# Runs in Python 3.11.
 # Package               version
-# certifi               2022.12.7
-# setuptools            60.2.0
-# pip                   23.0.1
+# certifi               2022.12.7 -> 2023.7.22
+# setuptools            60.2.0 -> 68.0.0
+# pip                   23.0.1 -> 23.1.2
 #                       21.3.1
-# Pillow                9.4.0
-# idna                  3.4
-# charset-normalizer    3.1.0
-# requests              2.28.2
-# urllib3               1.26.15
-# numpy                 1.24.2
-# wheel                 0.37.1
-# python-vlc (vlc)      30.0.18122
+# Pillow                9.4.0 -> 10.0.0
+# idna                  3.4 -> (Same)
+# charset-normalizer    3.1.0 -> 3.2.0
+# requests              2.28.2 -> 2.31.0
+# urllib3               1.26.15 -> 2.0.4
+# numpy                 1.24.2 -> 1.25.2
+# wheel                 0.37.1 -> 0.41.1
+# python-vlc (vlc)      30.0.18122 -> (Same)
+# selenium              4.11.2
 
 # Create form root
 root = tk.Tk()
@@ -57,7 +58,7 @@ canvas1.create_image(0, 0, image=bg,
 
 # Exclude these servants: 150 152 153 169 241 334
 exclude_these = [84, 150, 152, 153, 169, 241]
-latest_Servant_number = 313 + 2
+latest_Servant_number = 316 + 2
 servant_team = []
 previous_servant = []
 previous_servants_check = []
@@ -102,7 +103,7 @@ def SPECIAL_SERVANT_TEAM(arguments):
         # Suicide Run
         3: np.array([choice([252, 204]), 17, 259, 108, 295, 274]),
         # ONLY DIO
-        4: np.array([36, 119, 34, 0, 0, 0])
+        4: np.array([36, 119, 34, 2, 0, 0])
     }
     return team.get(arguments, np.array([0, 0, 0, 0, 0]))
 
@@ -186,6 +187,7 @@ def SUMMONING_CIRCLE():
         reset_checks = True
 
     SET_ALL(False)
+    print('click')
 
 
 for servant_order, servant_nr in enumerate(THRONE_OF_HEROES()):
