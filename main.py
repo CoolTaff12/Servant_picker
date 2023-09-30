@@ -39,12 +39,16 @@ from os import walk
 # selenium              4.11.2 -> 4.12.0
 # asyncio               3.4.3
 
-
 # First, get all servant names that already is downloaded from the directory.
 alreadyRegisteredServants = next(walk('Servant_Images/'), (None, None, []))[2]  # [] if no file
-alreadyRegisteredServants = [fN.replace('.png','') for fN in alreadyRegisteredServants]
+alreadyRegisteredServants = [fN.replace('.png', '') for fN in alreadyRegisteredServants]
 
-print(alreadyRegisteredServants)
+closetFilledWithMystic: str = next(walk('Mystic_Codec/'), (None, None, []))[2]  # [] if no file
+
+# print(alreadyRegisteredServants)
+
+# Mystic codec randomizer and choose summer codec if summer servants are presence
+# Have a harder mode where you can only have 5 to 3 servants on your team.
 
 # Create form root
 root = tk.Tk()
@@ -66,6 +70,26 @@ bg = ImageTk.PhotoImage(bg)
 canvas1.create_image(0, 0, image=bg,
                      anchor="nw")
 
+# Properties of the first Mystic codec
+clothes = Image.open("Mystic_Codec/" + closetFilledWithMystic[randint(0, 15)]).resize((70, 73), Image.LANCZOS)
+clothes = ImageTk.PhotoImage(clothes)
+
+# Draw Oval values, so we can edit it much easier.
+circle_x_positions = [1045, 1125]
+circle_y_positions = [214, 294]
+circle_width = 8
+
+canvas1.create_oval(circle_x_positions[0], circle_y_positions[0],
+                    circle_x_positions[1], circle_y_positions[1], outline="dark grey", fill="light grey",
+                    width=circle_width)
+
+# Display Mystic codec for the first time
+mysticCodec = canvas1.create_image(1050, 220, image=clothes, anchor="nw")
+
+canvas1.create_oval(circle_x_positions[0], circle_y_positions[0],
+                    circle_x_positions[1], circle_y_positions[1], outline="dark grey",
+                    width=circle_width)
+
 # Add Text
 # canvas1.create_text(200, 250, text="Welcome")
 
@@ -79,15 +103,19 @@ check_boxes = []
 new_servants = []
 special_summon = False
 reset_checks = False
+driver = ""
+webCheck = bool(len(alreadyRegisteredServants) < latest_Servant_number - len(exclude_these))
 
-driver = webdriver.Chrome()
-driver.get("https://tiermaker.com/create/fgo-servant-tier-list-sorted-by-servant-id-1548189?ref=button")
+if webCheck:
+    driver = webdriver.Chrome()
+    driver.get("https://tiermaker.com/create/fgo-servant-tier-list-sorted-by-servant-id-1548189?ref=button")
 
 
 def ON_CLOSING():
     print("Goodbye")
     loop.close()
-    driver.close()
+    if webCheck:
+        driver.close()
     root.destroy()
 
 
@@ -111,13 +139,15 @@ def THRONE_OF_HEROES():
 def SPECIAL_SERVANT_TEAM(arguments):
     team = {
         # Getter Team
-        1: np.array([52, 38, 273, 2, 0, 0]),
+        1: np.array([52, 38, 273, 0, 0, 0]),
         # Feline
-        2: np.array([59, 203, 104, 2, 0, 0]),
+        2: np.array([59, 203, 104, 149, 2, 0]),
         # Suicide Run
         3: np.array([choice([252, 204]), 17, 259, 108, 295, 274]),
         # ONLY DIO
-        4: np.array([36, 119, 34, 2, 0, 0])
+        4: np.array([36, 119, 34, 2, 0, 0]),
+        # Only Elisabeth
+        5: np.array([19, 62, 139, 191, 192, 47])
     }
     return team.get(arguments, np.array([0, 0, 0, 0, 0]))
 
@@ -127,7 +157,8 @@ def SPECIAL_SUMMON_MUSIC(arguments):
         1: ["mPw6ecM33QzSi48Y.mp3", 0.1],
         2: ["burunyaa.wav", 10.1],
         3: ["suicide_eng.wav", 10.1],
-        4: ["Laughs_in_muda.mp3", 10.1]
+        4: ["Laughs_in_muda.mp3", 10.1],
+        5: ["S018_NP2.mp3", 10.1]
     }
     play_the_fanfare = vlc.MediaPlayer('SFX/'+str(file.get(arguments)[0]))
     play_the_fanfare.play()
@@ -140,7 +171,7 @@ def SUMMON(servant_number, is_special):
         confirmed_servant_data = Image.open("empty.png").resize((138, 150), Image.LANCZOS)
     else:
         if alreadyRegisteredServants.count(servant_number) > 0:
-            confirmed_servant_data = (Image.open("Servant_Images/" + servant_number + ".png")
+            confirmed_servant_data = (Image.open("Servant_Images/" + str(servant_number) + ".png")
                                       .resize((138, 150), Image.LANCZOS))
         else:
             wait = WebDriverWait(driver, timeout=0.2)
@@ -157,6 +188,7 @@ def SUMMON(servant_number, is_special):
             confirmed_servant_data = Image.open(BytesIO(confirmed_servant_data)).resize((138, 150), Image.LANCZOS)
             # And downloads it!
             confirmed_servant_data.save('Servant_Images/' + str(servant_number) + '.png')
+            alreadyRegisteredServants.append(servant_number)
 
     return ImageTk.PhotoImage(confirmed_servant_data)
 
@@ -164,30 +196,27 @@ def SUMMON(servant_number, is_special):
 async def CONTINUES_ASYNC(allowed, no_replacement_request, servant_order, servant_nr):
     new_servants.append(SUMMON(servant_nr, special_summon))
     try:
-        if no_replacement_request and special_summon:
-            canvas1.itemconfigure(previous_servant[servant_order], image=new_servants[servant_order])
-
-        elif no_replacement_request and special_summon is False:
-            canvas1.itemconfigure(previous_servant[servant_order], image=new_servants[servant_order])
-            servant_team[servant_order] = new_servants[servant_order]
-
-        elif no_replacement_request is False and servant_order in allowed:
-            canvas1.itemconfigure(previous_servant[servant_order], image=new_servants[servant_order])
-            servant_team[servant_order] = new_servants[servant_order]
-
-        elif no_replacement_request is False and servant_order not in allowed:
-            canvas1.itemconfigure(previous_servant[servant_order], image=servant_team[servant_order])
-
-        else:
-            print("Oh oh! We skipped the rest of conditions at " + str(servant_order))
+        match no_replacement_request:
+            case True:
+                canvas1.itemconfigure(previous_servant[servant_order], image=new_servants[servant_order])
+                if special_summon is False:
+                    servant_team[servant_order] = new_servants[servant_order]
+            case False:
+                if servant_order in allowed:
+                    canvas1.itemconfigure(previous_servant[servant_order], image=new_servants[servant_order])
+                    servant_team[servant_order] = new_servants[servant_order]
+                elif servant_order not in allowed:
+                    canvas1.itemconfigure(previous_servant[servant_order], image=servant_team[servant_order])
+                else:
+                    print("Oh oh! We skipped the rest of conditions at " + str(servant_order))
     except:
         print("Oh no! Error at servant_order: " + str(servant_order) + " & servant_nr: " + str(servant_nr))
 
+
 def SUMMONING_CIRCLE():
-    global new_servants
-    global special_summon
-    global reset_checks
+    global new_servants, special_summon, reset_checks, newClothes
     new_servants = []
+    newClothes = ""
     start = time.time()
     summon_tasks = []
     no_replacement_request = bool(sum([psc.get() is True for psc in previous_servants_check]) not in range(1, 4))
@@ -200,6 +229,9 @@ def SUMMONING_CIRCLE():
         re_summon = SPECIAL_SERVANT_TEAM(random_special)
     else:
         re_summon = THRONE_OF_HEROES()
+        newClothes = Image.open("Mystic_Codec/" + closetFilledWithMystic[randint(0, 15)]).resize((70, 73), Image.LANCZOS)
+        newClothes = ImageTk.PhotoImage(newClothes)
+        canvas1.itemconfigure(mysticCodec, image=newClothes)
 
     for servant_order, servant_nr in enumerate(re_summon):
         # Creating tasks here!
@@ -241,6 +273,7 @@ print('start')
 loop = asyncio.get_event_loop()
 tasks = []
 
+
 for servant_order, servant_nr in enumerate(THRONE_OF_HEROES()):
     tasks.append(loop.create_task(START_ASYNC(servant_order, servant_nr)))
 
@@ -254,8 +287,8 @@ btn = tk.Button(root, anchor="s", text="Re-summon", command=lambda: SUMMONING_CI
 # 425, 30, anchor="s", window=btn
 btn_canvas = canvas1.create_window(625, 30, anchor="s", window=btn)
 
-
-driver.minimize_window()
+if webCheck:
+    driver.minimize_window()
 
 root.protocol("WM_DELETE_WINDOW", ON_CLOSING)
 root.mainloop()
