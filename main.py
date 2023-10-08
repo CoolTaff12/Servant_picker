@@ -75,8 +75,8 @@ clothes = Image.open("Mystic_Codec/" + closetFilledWithMystic[randint(0, 15)]).r
 clothes = ImageTk.PhotoImage(clothes)
 
 # Draw Oval values, so we can edit it much easier.
-circle_x_positions = [1045, 1125]
-circle_y_positions = [214, 294]
+circle_x_positions = [1050, 1130]
+circle_y_positions = [154, 234]
 circle_width = 8
 
 canvas1.create_oval(circle_x_positions[0], circle_y_positions[0],
@@ -84,7 +84,7 @@ canvas1.create_oval(circle_x_positions[0], circle_y_positions[0],
                     width=circle_width)
 
 # Display Mystic codec for the first time
-mysticCodec = canvas1.create_image(1050, 220, image=clothes, anchor="nw")
+mysticCodec = canvas1.create_image(1055, 160, image=clothes, anchor="nw")
 
 canvas1.create_oval(circle_x_positions[0], circle_y_positions[0],
                     circle_x_positions[1], circle_y_positions[1], outline="dark grey",
@@ -95,7 +95,7 @@ canvas1.create_oval(circle_x_positions[0], circle_y_positions[0],
 
 # Exclude these servants: 150 152 153 169 241 334
 exclude_these = [84, 150, 152, 153, 169, 241]
-latest_Servant_number = 316 + 2
+latest_Servant_number = 323 + 2
 servant_team = []
 previous_servant = []
 previous_servants_check = []
@@ -104,7 +104,9 @@ new_servants = []
 special_summon = False
 reset_checks = False
 driver = ""
-webCheck = bool(len(alreadyRegisteredServants) < latest_Servant_number - len(exclude_these))
+webCheck = bool(len(alreadyRegisteredServants) < latest_Servant_number - len(exclude_these) - 2)
+# print(len(alreadyRegisteredServants))
+# print(latest_Servant_number - len(exclude_these))
 
 if webCheck:
     driver = webdriver.Chrome()
@@ -133,7 +135,17 @@ def DISABLE_OR_ENABLE_ALL(function_mode):
 def THRONE_OF_HEROES():
 
     # Randomize 6 servants numbers in throne_of_heroes
-    return np.random.choice(list(set(range(2, latest_Servant_number)) - set(exclude_these)), 6)
+    number_list = []
+    slots = 6
+    hard_mode = bool(randint(1, 2) == 2)
+    if hard_mode:
+        slots = randint(3, 5)
+        number_list = np.random.choice(list(set(range(2, latest_Servant_number)) - set(exclude_these)), slots)
+        while len(number_list) < 6:
+            number_list = np.append(number_list,[0])
+    else:
+        number_list = np.random.choice(list(set(range(2, latest_Servant_number)) - set(exclude_these)), slots)
+    return number_list
 
 
 def SPECIAL_SERVANT_TEAM(arguments):
@@ -169,6 +181,8 @@ def SUMMON(servant_number, is_special):
 
     if is_special and servant_number == 0:
         confirmed_servant_data = Image.open("empty.png").resize((138, 150), Image.LANCZOS)
+    elif is_special is False and servant_number == 0:
+        confirmed_servant_data = Image.open("empty.png").resize((138, 150), Image.LANCZOS)
     else:
         if alreadyRegisteredServants.count(servant_number) > 0:
             confirmed_servant_data = (Image.open("Servant_Images/" + str(servant_number) + ".png")
@@ -176,7 +190,7 @@ def SUMMON(servant_number, is_special):
         else:
             wait = WebDriverWait(driver, timeout=0.2)
             summoning_circle = wait.until(
-                ec.visibility_of_element_located((By.XPATH,
+                ec.presence_of_element_located((By.XPATH,
                                                   '//*[@id="create-image-carousel"]/div[' + str(servant_number) + ']')))
             # Get image from div
             summoning_servant = str(summoning_circle.get_attribute("style")).split('"')
@@ -191,7 +205,6 @@ def SUMMON(servant_number, is_special):
             alreadyRegisteredServants.append(servant_number)
 
     return ImageTk.PhotoImage(confirmed_servant_data)
-
 
 async def CONTINUES_ASYNC(allowed, no_replacement_request, servant_order, servant_nr):
     new_servants.append(SUMMON(servant_nr, special_summon))
@@ -225,7 +238,7 @@ def SUMMONING_CIRCLE():
     special_summon = bool(randint(1, 6) == 3)
     random_special = 0
     if special_summon and no_replacement_request:
-        random_special = randint(1, 4)
+        random_special = randint(1, 5)
         re_summon = SPECIAL_SERVANT_TEAM(random_special)
     else:
         re_summon = THRONE_OF_HEROES()
