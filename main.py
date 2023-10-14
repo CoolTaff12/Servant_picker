@@ -95,7 +95,7 @@ canvas1.create_oval(circle_x_positions[0], circle_y_positions[0],
 
 # Exclude these servants: 150 152 153 169 241 334
 exclude_these = [84, 150, 152, 153, 169, 241]
-latest_Servant_number = 323 + 2
+latest_Servant_number = 326 + 2
 servant_team = []
 previous_servant = []
 previous_servants_check = []
