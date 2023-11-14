@@ -95,7 +95,7 @@ canvas1.create_oval(circle_x_positions[0], circle_y_positions[0],
 
 # Exclude these servants: 150 152 153 169 241 334
 exclude_these = [84, 150, 152, 153, 169, 241]
-latest_Servant_number = 326 + 2
+latest_Servant_number = 328 + 2
 servant_team = []
 previous_servant = []
 previous_servants_check = []
@@ -105,8 +105,9 @@ special_summon = False
 reset_checks = False
 driver = ""
 webCheck = bool(len(alreadyRegisteredServants) < latest_Servant_number - len(exclude_these) - 2)
-# print(len(alreadyRegisteredServants))
-# print(latest_Servant_number - len(exclude_these))
+print(len(alreadyRegisteredServants))
+print(latest_Servant_number - len(exclude_these))
+print(webCheck)
 
 if webCheck:
     driver = webdriver.Chrome()
@@ -184,7 +185,7 @@ def SUMMON(servant_number, is_special):
     elif is_special is False and servant_number == 0:
         confirmed_servant_data = Image.open("empty.png").resize((138, 150), Image.LANCZOS)
     else:
-        if alreadyRegisteredServants.count(servant_number) > 0:
+        if not webCheck:
             confirmed_servant_data = (Image.open("Servant_Images/" + str(servant_number) + ".png")
                                       .resize((138, 150), Image.LANCZOS))
         else:
