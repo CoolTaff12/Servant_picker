@@ -22,21 +22,21 @@ from os import walk
 # ----------------
 
 
-# Runs in Python 3.11.
+# Runs in Python 3.12.
 # Package               version
-# certifi               2022.12.7 -> 2023.7.22
-# setuptools            60.2.0 -> 68.2.2
-# pip                   23.0.1 -> 23.1.2
+# certifi               2022.12.7 -> 2024.2.2
+# setuptools            60.2.0 -> 69.0.3
+# pip                   23.0.1 -> 23.3.2
 #                       21.3.1
-# Pillow                9.4.0 -> 10.0.1
-# idna                  3.4 -> (Same)
-# charset-normalizer    3.1.0 -> 3.2.0
+# Pillow                9.4.0 -> 10.2.0
+# idna                  3.4 -> 3.6
+# charset-normalizer    3.1.0 -> 3.3.2
 # requests              2.28.2 -> 2.31.0
-# urllib3               1.26.15 -> 2.0.5
-# numpy                 1.24.2 -> 1.26.0
-# wheel                 0.37.1 -> 0.41.2
-# python-vlc (vlc)      30.0.18122 -> (Same)
-# selenium              4.11.2 -> 4.12.0
+# urllib3               1.26.15 -> 2.2.0
+# numpy                 1.24.2 -> 1.26.3
+# wheel                 0.37.1 -> 0.42.0
+# python-vlc (vlc)      30.0.18122 -> 3.0.20123
+# selenium              4.11.2 -> 4.17.2
 # asyncio               3.4.3
 
 # First, get all servant names that already is downloaded from the directory.
@@ -94,8 +94,8 @@ canvas1.create_oval(circle_x_positions[0], circle_y_positions[0],
 # canvas1.create_text(200, 250, text="Welcome")
 
 # Exclude these servants: 150 152 153 169 241 334
-exclude_these = [84, 150, 152, 153, 169, 241]
-latest_Servant_number = 328 + 2
+exclude_these = [84, 150, 152, 153, 169, 241, 334]
+latest_Servant_number = 336 + 2 #Bazett
 servant_team = []
 previous_servant = []
 previous_servants_check = []
@@ -160,7 +160,9 @@ def SPECIAL_SERVANT_TEAM(arguments):
         # ONLY DIO
         4: np.array([36, 119, 34, 2, 0, 0]),
         # Only Elisabeth
-        5: np.array([19, 62, 139, 191, 192, 47])
+        5: np.array([19, 62, 139, 191, 192, 47]),
+        # Cooking team
+        6: np.array([12, 27, 59, 331, 235, 0])
     }
     return team.get(arguments, np.array([0, 0, 0, 0, 0]))
 
@@ -239,7 +241,7 @@ def SUMMONING_CIRCLE():
     special_summon = bool(randint(1, 6) == 3)
     random_special = 0
     if special_summon and no_replacement_request:
-        random_special = randint(1, 5)
+        random_special = randint(1, 6)
         re_summon = SPECIAL_SERVANT_TEAM(random_special)
     else:
         re_summon = THRONE_OF_HEROES()
@@ -284,7 +286,7 @@ async def START_ASYNC(servant_order, servant_nr):
 
 start = time.time()
 print('start')
-loop = asyncio.get_event_loop()
+loop = asyncio.new_event_loop()
 tasks = []
 
 
