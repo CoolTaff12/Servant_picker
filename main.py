@@ -151,8 +151,8 @@ def THRONE_OF_HEROES():
 
 def SPECIAL_SERVANT_TEAM(arguments):
     team = {
-        # Getter Team
-        1: np.array([52, 38, 273, 0, 0, 0]),
+        # Umu
+        1: np.array([6, 91, 176, 0, 0, 0]),
         # Feline
         2: np.array([59, 203, 104, 149, 2, 0]),
         # Suicide Run
@@ -169,7 +169,7 @@ def SPECIAL_SERVANT_TEAM(arguments):
 
 def SPECIAL_SUMMON_MUSIC(arguments):
     file = {
-        1: ["mPw6ecM33QzSi48Y.mp3", 0.1],
+        1: ["S005_SelectAttack1.mp3", 10.1],
         2: ["burunyaa.wav", 10.1],
         3: ["suicide_eng.wav", 10.1],
         4: ["Laughs_in_muda.mp3", 10.1],
